@@ -2,6 +2,11 @@ from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_mail import Mail
 import os
+import sys
+
+# Add the project root directory to Python path
+sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
+
 from backend.models import db
 from backend.routes import api
 from backend import utils
@@ -50,9 +55,10 @@ app.register_blueprint(api, url_prefix='/api')
 # Background tasks
 def run_scheduled_tasks():
     """Run scheduled tasks in the background"""
-    with app.app_context():
-        while True:
-            try:
+    while True:
+        try:
+            # Create a new application context for each iteration
+            with app.app_context():
                 logger.info("Running scheduled tasks...")
                 
                 # Check for expiring products
@@ -71,11 +77,11 @@ def run_scheduled_tasks():
                     logger.info(f"Processed notifications: {notification_results}")
                 
                 logger.info("Scheduled tasks completed")
-            except Exception as e:
-                logger.error(f"Error in scheduled tasks: {str(e)}")
-            
-            # Sleep for 1 hour
-            time.sleep(3600)
+        except Exception as e:
+            logger.error(f"Error in scheduled tasks: {str(e)}")
+        
+        # Sleep for 1 hour
+        time.sleep(3600)
 
 # Serve frontend
 @app.route('/', defaults={'path': ''})

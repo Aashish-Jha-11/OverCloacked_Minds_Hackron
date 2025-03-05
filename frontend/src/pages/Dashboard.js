@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Button, Alert, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { FaBoxOpen, FaRecycle, FaChartBar, FaBarcode, FaUsers, FaBell, FaExclamationTriangle } from 'react-icons/fa';
+import { FaBoxOpen, FaRecycle, FaChartBar, FaBarcode, FaUsers, FaBell, FaExclamationTriangle, 
+  FaRocket, FaSatellite, FaMicrochip, FaDatabase, FaNetworkWired } from 'react-icons/fa';
 import { productsApi, wasteRecordsApi, inventoryApi, notificationsApi } from '../services/api';
 import { toast } from 'react-toastify';
 
@@ -97,20 +98,29 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="text-center p-5">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
+        <div className="position-relative" style={{ width: '80px', height: '80px', margin: '0 auto' }}>
+          <div className="spinner-border text-primary" role="status" style={{ width: '80px', height: '80px' }}>
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <div className="position-absolute" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+            <FaRocket className="text-primary" style={{ animation: 'pulse 1.5s infinite' }} />
+          </div>
         </div>
-        <p className="mt-3">Loading dashboard data...</p>
+        <p className="mt-3" style={{ color: 'var(--primary-color)', letterSpacing: '1px' }}>INITIALIZING SYSTEM...</p>
       </div>
     );
   }
   
   if (error) {
     return (
-      <Alert variant="danger">
-        <Alert.Heading>Error Loading Dashboard</Alert.Heading>
-        <p>{error}</p>
-        <Button variant="outline-danger" onClick={fetchDashboardData}>Retry</Button>
+      <Alert variant="danger" className="sci-fi-border">
+        <Alert.Heading>
+          <FaExclamationTriangle className="me-2" /> SYSTEM MALFUNCTION
+        </Alert.Heading>
+        <p style={{ fontFamily: 'monospace' }}>{error}</p>
+        <Button variant="danger" onClick={fetchDashboardData} className="glow-effect">
+          <FaNetworkWired className="me-2" /> REINITIALIZE SYSTEM
+        </Button>
       </Alert>
     );
   }
@@ -118,62 +128,68 @@ const Dashboard = () => {
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1>Dashboard</h1>
+        <h1 style={{ color: 'var(--primary-color)', textTransform: 'uppercase', letterSpacing: '2px' }}>
+          COMMAND CENTER <span style={{ fontSize: '0.5em', verticalAlign: 'middle', opacity: 0.7 }}>v1.0</span>
+        </h1>
         <div className="d-flex">
           <Button 
-            variant="outline-secondary" 
-            className="me-2"
+            variant="primary" 
+            className="me-2 glow-effect"
             onClick={fetchDashboardData}
+            style={{ borderRadius: '4px' }}
           >
-            <FaChartBar className="me-2" />
-            Refresh Data
+            <FaDatabase className="me-2" />
+            SYNC DATA
           </Button>
         </div>
       </div>
       
       {/* Quick Actions */}
-      <Card className="mb-4 shadow-sm">
-        <Card.Header>
-          <h5 className="mb-0">Quick Actions</h5>
+      <Card className="mb-4 dashboard-card">
+        <Card.Header style={{ borderBottom: '1px solid var(--primary-color)' }}>
+          <h5 className="mb-0" style={{ color: 'var(--primary-color)', letterSpacing: '1px' }}>
+            <FaSatellite className="me-2" /> SYSTEM OPERATIONS
+          </h5>
         </Card.Header>
-        <Card.Body>
+        <Card.Body style={{ background: 'rgba(0, 188, 212, 0.05)' }}>
           <Row>
             <Col md={4} className="mb-2">
               <Button 
-                variant="outline-primary" 
-                className="w-100 py-3" 
+                variant="primary" 
+                className="w-100 py-3 sci-fi-border" 
                 onClick={handleCheckExpiry}
               >
                 <div className="d-flex flex-column align-items-center">
                   <FaExclamationTriangle className="mb-2" size={24} />
-                  <span>Check Expiring Products</span>
+                  <span style={{ letterSpacing: '1px' }}>SCAN EXPIRY STATUS</span>
                 </div>
               </Button>
             </Col>
             <Col md={4} className="mb-2">
               <Button 
-                variant="outline-danger" 
-                className="w-100 py-3" 
+                variant="danger" 
+                className="w-100 py-3 sci-fi-border" 
                 onClick={handleProcessExpired}
               >
                 <div className="d-flex flex-column align-items-center">
                   <FaRecycle className="mb-2" size={24} />
-                  <span>Process Expired Products</span>
+                  <span style={{ letterSpacing: '1px' }}>RECYCLE EXPIRED ITEMS</span>
                 </div>
               </Button>
             </Col>
             <Col md={4} className="mb-2">
               <Button 
-                variant="outline-success" 
-                className="w-100 py-3" 
+                variant="success" 
+                className="w-100 py-3 sci-fi-border" 
                 onClick={handleProcessNotifications}
                 disabled={stats.pendingNotifications === 0}
               >
-                <div className="d-flex flex-column align-items-center">
+                <div className="d-flex flex-column align-items-center position-relative">
                   <FaBell className="mb-2" size={24} />
-                  <span>Send Notifications</span>
+                  <span style={{ letterSpacing: '1px' }}>BROADCAST ALERTS</span>
                   {stats.pendingNotifications > 0 && (
-                    <Badge bg="danger" pill className="position-absolute top-0 end-0 mt-1 me-1">
+                    <Badge bg="danger" pill className="position-absolute top-0 end-0 mt-1 me-1"
+                      style={{ boxShadow: '0 0 5px var(--danger-color)' }}>
                       {stats.pendingNotifications}
                     </Badge>
                   )}
@@ -187,58 +203,70 @@ const Dashboard = () => {
       {/* Stats Cards */}
       <Row className="mb-4">
         <Col md={3} sm={6} className="mb-3">
-          <Card className="h-100 shadow-sm dashboard-card">
+          <Card className="h-100 dashboard-card">
             <Card.Body className="text-center">
-              <div className="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block mb-3">
-                <FaBoxOpen className="text-primary" size={30} />
+              <div className="rounded-circle p-3 d-inline-block mb-3" style={{ 
+                background: 'rgba(0, 188, 212, 0.1)', 
+                boxShadow: '0 0 15px rgba(0, 188, 212, 0.2)' 
+              }}>
+                <FaBoxOpen size={30} style={{ color: 'var(--primary-color)' }} />
               </div>
-              <h2>{stats.totalProducts}</h2>
-              <p className="text-muted mb-0">Total Products</p>
+              <h2 style={{ color: 'var(--primary-color)', fontWeight: 'bold' }}>{stats.totalProducts}</h2>
+              <p style={{ color: 'var(--light-text)', letterSpacing: '1px', fontSize: '0.8rem' }}>INVENTORY COUNT</p>
             </Card.Body>
             <Card.Footer className="text-center">
-              <Link to="/inventory" className="btn btn-sm btn-outline-primary">View Inventory</Link>
+              <Link to="/inventory" className="btn btn-sm btn-primary">ACCESS INVENTORY</Link>
             </Card.Footer>
           </Card>
         </Col>
         <Col md={3} sm={6} className="mb-3">
-          <Card className="h-100 shadow-sm dashboard-card">
+          <Card className="h-100 dashboard-card">
             <Card.Body className="text-center">
-              <div className="bg-warning bg-opacity-10 rounded-circle p-3 d-inline-block mb-3">
-                <FaExclamationTriangle className="text-warning" size={30} />
+              <div className="rounded-circle p-3 d-inline-block mb-3" style={{ 
+                background: 'rgba(255, 214, 0, 0.1)', 
+                boxShadow: '0 0 15px rgba(255, 214, 0, 0.2)' 
+              }}>
+                <FaExclamationTriangle size={30} style={{ color: 'var(--warning-color)' }} />
               </div>
-              <h2>{stats.expiringProducts}</h2>
-              <p className="text-muted mb-0">Expiring Soon</p>
+              <h2 style={{ color: 'var(--warning-color)', fontWeight: 'bold' }}>{stats.expiringProducts}</h2>
+              <p style={{ color: 'var(--light-text)', letterSpacing: '1px', fontSize: '0.8rem' }}>CRITICAL TIMELINE</p>
             </Card.Body>
             <Card.Footer className="text-center">
-              <Link to="/inventory?status=active&expiry_days=7" className="btn btn-sm btn-outline-warning">View Expiring</Link>
+              <Link to="/inventory?status=active&expiry_days=7" className="btn btn-sm btn-warning">MONITOR EXPIRING</Link>
             </Card.Footer>
           </Card>
         </Col>
         <Col md={3} sm={6} className="mb-3">
-          <Card className="h-100 shadow-sm dashboard-card">
+          <Card className="h-100 dashboard-card">
             <Card.Body className="text-center">
-              <div className="bg-danger bg-opacity-10 rounded-circle p-3 d-inline-block mb-3">
-                <FaRecycle className="text-danger" size={30} />
+              <div className="rounded-circle p-3 d-inline-block mb-3" style={{ 
+                background: 'rgba(255, 23, 68, 0.1)', 
+                boxShadow: '0 0 15px rgba(255, 23, 68, 0.2)' 
+              }}>
+                <FaRecycle size={30} style={{ color: 'var(--danger-color)' }} />
               </div>
-              <h2>{stats.expiredProducts}</h2>
-              <p className="text-muted mb-0">Expired Products</p>
+              <h2 style={{ color: 'var(--danger-color)', fontWeight: 'bold' }}>{stats.expiredProducts}</h2>
+              <p style={{ color: 'var(--light-text)', letterSpacing: '1px', fontSize: '0.8rem' }}>EXPIRED UNITS</p>
             </Card.Body>
             <Card.Footer className="text-center">
-              <Link to="/inventory?status=expired" className="btn btn-sm btn-outline-danger">View Expired</Link>
+              <Link to="/inventory?status=expired" className="btn btn-sm btn-danger">PROCESS EXPIRED</Link>
             </Card.Footer>
           </Card>
         </Col>
         <Col md={3} sm={6} className="mb-3">
-          <Card className="h-100 shadow-sm dashboard-card">
+          <Card className="h-100 dashboard-card">
             <Card.Body className="text-center">
-              <div className="bg-success bg-opacity-10 rounded-circle p-3 d-inline-block mb-3">
-                <FaBell className="text-success" size={30} />
+              <div className="rounded-circle p-3 d-inline-block mb-3" style={{ 
+                background: 'rgba(0, 200, 83, 0.1)', 
+                boxShadow: '0 0 15px rgba(0, 200, 83, 0.2)' 
+              }}>
+                <FaMicrochip size={30} style={{ color: 'var(--success-color)' }} />
               </div>
-              <h2>{stats.discountedProducts}</h2>
-              <p className="text-muted mb-0">Discounted Products</p>
+              <h2 style={{ color: 'var(--success-color)', fontWeight: 'bold' }}>{stats.discountedProducts}</h2>
+              <p style={{ color: 'var(--light-text)', letterSpacing: '1px', fontSize: '0.8rem' }}>OPTIMIZED PRICING</p>
             </Card.Body>
             <Card.Footer className="text-center">
-              <Link to="/inventory?status=discounted" className="btn btn-sm btn-outline-success">View Discounted</Link>
+              <Link to="/inventory?status=discounted" className="btn btn-sm btn-success">ACCESS DISCOUNTS</Link>
             </Card.Footer>
           </Card>
         </Col>
@@ -248,7 +276,7 @@ const Dashboard = () => {
       {stats.wasteStats && (
         <Row className="mb-4">
           <Col md={12}>
-            <Card className="shadow-sm">
+            <Card className="dashboard-card">
               <Card.Header className="d-flex justify-content-between align-items-center">
                 <h5 className="mb-0">Waste Statistics Summary</h5>
                 <Link to="/analytics" className="btn btn-sm btn-outline-primary">View Detailed Analytics</Link>

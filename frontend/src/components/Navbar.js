@@ -1,20 +1,21 @@
 import React from 'react';
 import { Navbar, Nav, Container, Badge } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
-import { FaRecycle, FaBoxOpen, FaChartBar, FaBarcode, FaUsers, FaStore } from 'react-icons/fa';
+import { FaRecycle, FaBoxOpen, FaChartBar, FaBarcode, FaUsers, FaRocket, FaCircle } from 'react-icons/fa';
 
 const AppNavbar = () => {
   const location = useLocation();
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" className="mb-4 shadow-sm sticky-top">
+    <Navbar expand="lg" className="mb-4 sticky-top navbar-dark">
       <Container>
         <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
-          <div className="bg-success rounded-circle p-2 me-2">
-            <FaStore className="text-white" />
+          <div className="p-2 me-2 position-relative">
+            <FaRocket className="text-primary" style={{ fontSize: '1.5rem' }} />
+            <FaCircle className="text-accent position-absolute" style={{ fontSize: '0.5rem', bottom: '8px', right: '8px', color: 'var(--accent-color)' }} />
           </div>
           <div>
-            <span className="fw-bold">Dark Store</span>
-            <span className="d-block small text-light">Waste Management System</span>
+            <span className="fw-bold" style={{ letterSpacing: '1px' }}>WASTE<span style={{ color: 'var(--primary-color)' }}>SYNC</span></span>
+            <span className="d-block small" style={{ fontSize: '0.7rem', letterSpacing: '1px', opacity: '0.8' }}>ADVANCED MANAGEMENT SYSTEM</span>
           </div>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -23,47 +24,46 @@ const AppNavbar = () => {
             <Nav.Link 
               as={Link} 
               to="/inventory" 
-              className={`mx-1 ${location.pathname === '/inventory' ? 'active fw-bold' : ''}`}
+              className={`mx-2 ${location.pathname === '/inventory' ? 'active' : ''}`}
             >
-              <FaBoxOpen className="me-1" /> Inventory
-              {location.pathname === '/inventory' && <div className="nav-indicator"></div>}
+              <FaBoxOpen className="me-1" /> INVENTORY
             </Nav.Link>
             <Nav.Link 
               as={Link} 
               to="/waste-tracking" 
-              className={`mx-1 ${location.pathname === '/waste-tracking' ? 'active fw-bold' : ''}`}
+              className={`mx-2 ${location.pathname === '/waste-tracking' ? 'active' : ''}`}
             >
-              <FaRecycle className="me-1" /> Waste Tracking
-              {location.pathname === '/waste-tracking' && <div className="nav-indicator"></div>}
+              <FaRecycle className="me-1" /> WASTE TRACKING
             </Nav.Link>
             <Nav.Link 
               as={Link} 
               to="/analytics" 
-              className={`mx-1 ${location.pathname === '/analytics' ? 'active fw-bold' : ''}`}
+              className={`mx-2 ${location.pathname === '/analytics' ? 'active' : ''}`}
             >
-              <FaChartBar className="me-1" /> Analytics
-              {location.pathname === '/analytics' && <div className="nav-indicator"></div>}
+              <FaChartBar className="me-1" /> ANALYTICS
             </Nav.Link>
             <Nav.Link 
               as={Link} 
               to="/scanner" 
-              className={`mx-1 ${location.pathname === '/scanner' ? 'active fw-bold' : ''}`}
+              className={`mx-2 ${location.pathname === '/scanner' ? 'active' : ''}`}
             >
-              <FaBarcode className="me-1" /> Scanner
-              {location.pathname === '/scanner' && <div className="nav-indicator"></div>}
+              <FaBarcode className="me-1" /> SCANNER
             </Nav.Link>
             <Nav.Link 
               as={Link} 
               to="/customers" 
-              className={`mx-1 ${location.pathname === '/customers' ? 'active fw-bold' : ''}`}
+              className={`mx-2 ${location.pathname === '/customers' ? 'active' : ''}`}
             >
-              <FaUsers className="me-1" /> Customers
-              {location.pathname === '/customers' && <div className="nav-indicator"></div>}
+              <FaUsers className="me-1" /> CUSTOMERS
             </Nav.Link>
           </Nav>
           <div className="d-flex align-items-center">
-            <Badge bg="success" className="me-2 p-2">
-              <span className="fw-normal">v1.0</span>
+            <Badge bg="primary" className="me-2 p-2" style={{ 
+              background: 'linear-gradient(45deg, var(--primary-color), var(--secondary-color))', 
+              border: 'none',
+              boxShadow: '0 0 10px rgba(0, 188, 212, 0.5)'
+            }}>
+              <span className="fw-normal" style={{ letterSpacing: '1px' }}>v1.0</span>
             </Badge>
           </div>
         </Navbar.Collapse>

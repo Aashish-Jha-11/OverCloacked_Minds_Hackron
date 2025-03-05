@@ -44,6 +44,18 @@ export const customersApi = {
   getAll: () => api.get('/customers'),
   getById: (id) => api.get(`/customers/${id}`),
   create: (data) => api.post('/customers', data),
+  update: (id, data) => api.put(`/customers/${id}`, data),
+  delete: (id) => api.delete(`/customers/${id}`),
+  import: (file, format) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('format', format);
+    return api.post('/customers/import', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  }
 };
 
 // Purchase History API

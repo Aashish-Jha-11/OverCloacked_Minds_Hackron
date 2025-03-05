@@ -111,6 +111,15 @@ const Inventory = () => {
     toast.success('Product deleted successfully');
   };
   
+  const handleEditProduct = (product) => {
+    navigate(`/inventory/edit/${product.id}`);
+  };
+  
+  const handleViewBarcode = (product) => {
+    // Open a modal or navigate to barcode view
+    navigate(`/scanner?barcode=${product.barcode}`);
+  };
+  
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -238,8 +247,9 @@ const Inventory = () => {
             <InventoryTable 
               products={products} 
               loading={loading}
-              onUpdate={handleProductUpdate}
+              onEdit={handleEditProduct}
               onDelete={handleProductDelete}
+              onViewBarcode={handleViewBarcode}
               categories={categories}
             />
           </Card.Body>

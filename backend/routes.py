@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 from backend import utils
 from backend.barcode_generator import BarcodeGenerator
 import json
+import csv
+import io
 
 api = Blueprint('api', __name__)
 
@@ -453,6 +455,142 @@ def get_customer(customer_id):
     """Get a single customer by ID"""
     customer = Customer.query.get_or_404(customer_id)
     return jsonify(customer.to_dict())
+
+@api.route('/customers/<int:customer_id>', methods=['PUT'])
+def update_customer(customer_id):
+    """Update an existing customer"""
+    customer = Customer.query.get_or_404(customer_id)
+    data = request.json
+    
+    customer.name = data.get('name', customer.name)
+    customer.email = data.get('email', customer.email)
+    customer.phone = data.get('phone', customer.phone)
+    customer.notification_preference = data.get('notification_preference', customer.notification_preference)
+    
+    try:
+        db.session.commit()
+        return jsonify(customer.to_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+@api.route('/customers/<int:customer_id>', methods=['DELETE'])
+def delete_customer(customer_id):
+    """Delete a customer"""
+    customer = Customer.query.get_or_404(customer_id)
+    
+    try:
+        # First delete related purchase history records
+        PurchaseHistory.query.filter_by(customer_id=customer_id).delete()
+        
+        # Then delete related discount notifications
+        DiscountNotification.query.filter_by(customer_id=customer_id).delete()
+        
+        # Finally delete the customer
+        db.session.delete(customer)
+        db.session.commit()
+        return jsonify({'message': 'Customer deleted successfully'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+@api.route('/customers/import', methods=['POST'])
+def import_customers():
+    """Import customers from CSV, JSON, or TXT file"""
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
+        
+    file = request.files['file']
+    file_format = request.form.get('format', '').lower()
+    
+    if not file.filename:
+        return jsonify({'error': 'No file selected'}), 400
+        
+    try:
+        customers_data = []
+        
+        # Process CSV file
+        if file_format == 'csv':
+            stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+            csv_reader = csv.DictReader(stream)
+            for row in csv_reader:
+                customers_data.append({
+                    'name': row.get('name', ''),
+                    'email': row.get('email', ''),
+                    'phone': row.get('phone', ''),
+                    'address': row.get('address', '')
+                })
+                
+        # Process JSON file
+        elif file_format == 'json':
+            content = file.read().decode('utf-8')
+            json_data = json.loads(content)
+            
+            # Handle both array of objects and single object
+            if isinstance(json_data, list):
+                customers_data = json_data
+            else:
+                customers_data = [json_data]
+                
+        # Process TXT file (assuming tab or comma separated)
+        elif file_format == 'txt':
+            stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+            for line in stream:
+                # Try to split by tab first, then by comma if not enough fields
+                fields = line.strip().split('\t')
+                if len(fields) < 2:
+                    fields = line.strip().split(',')
+                    
+                if len(fields) >= 2:  # At least name and one contact method
+                    customers_data.append({
+                        'name': fields[0],
+                        'email': fields[1] if len(fields) > 1 else '',
+                        'phone': fields[2] if len(fields) > 2 else '',
+                        'address': fields[3] if len(fields) > 3 else ''
+                    })
+        else:
+            return jsonify({'error': 'Unsupported file format'}), 400
+            
+        # Validate and add customers to database
+        added_count = 0
+        errors = []
+        
+        for idx, customer_data in enumerate(customers_data):
+            # Basic validation
+            if not customer_data.get('name'):
+                errors.append(f"Row {idx+1}: Name is required")
+                continue
+                
+            # Check for duplicate email if provided
+            if customer_data.get('email') and Customer.query.filter_by(email=customer_data['email']).first():
+                errors.append(f"Row {idx+1}: Email {customer_data['email']} already exists")
+                continue
+                
+            # Create new customer
+            new_customer = Customer(
+                name=customer_data.get('name', ''),
+                email=customer_data.get('email', ''),
+                phone=customer_data.get('phone', ''),
+                address=customer_data.get('address', '')
+            )
+            
+            db.session.add(new_customer)
+            added_count += 1
+            
+        # Commit all valid customers
+        if added_count > 0:
+            db.session.commit()
+            
+        return jsonify({
+            'message': f'Successfully imported {added_count} customers',
+            'total': len(customers_data),
+            'added': added_count,
+            'errors': errors
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
 
 @api.route('/customers', methods=['POST'])
 def create_customer():
