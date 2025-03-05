@@ -2244,3 +2244,103 @@ WHERE categories.name = ?
 2025-03-05 21:13:10,012 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2025 21:13:10] "GET /api/waste-records?waste_type=&recyclable=&start_date=&end_date= HTTP/1.1" 200 -
 2025-03-05 21:13:10,018 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2025 21:13:10] "GET /api/products?status=expired HTTP/1.1" 200 -
 2025-03-05 21:13:10,021 - werkzeug - INFO - 127.0.0.1 - - [05/Mar/2025 21:13:10] "GET /api/waste-records?waste_type=&recyclable=&start_date=&end_date= HTTP/1.1" 200 -
+2025-03-05 23:32:28,945 - __main__ - INFO - Running scheduled tasks...
+2025-03-05 23:32:28,978 - __main__ - INFO - Updated 4 expiring products
+2025-03-05 23:32:28,981 - __main__ - INFO - Processed 1 expired products
+2025-03-05 23:32:28,989 - __main__ - ERROR - Error in scheduled tasks: The current Flask app is not registered with this 'SQLAlchemy' instance. Did you forget to call 'init_app', or did you create multiple 'SQLAlchemy' instances?
+2025-03-05 23:32:29,030 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://50.50.49.136:5001
+2025-03-05 23:32:29,030 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-05 23:32:29,030 - werkzeug - INFO -  * Restarting with stat
+2025-03-05 23:32:29,203 - __main__ - INFO - Running scheduled tasks...
+2025-03-05 23:32:29,226 - __main__ - ERROR - Error in scheduled tasks: The current Flask app is not registered with this 'SQLAlchemy' instance. Did you forget to call 'init_app', or did you create multiple 'SQLAlchemy' instances?
+2025-03-05 23:32:29,237 - werkzeug - WARNING -  * Debugger is active!
+2025-03-05 23:32:29,243 - werkzeug - INFO -  * Debugger PIN: 271-005-394
+2025-03-06 00:00:22,063 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:00:22] "GET /api/products HTTP/1.1" 200 -
+2025-03-06 00:00:22,068 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:00:22] "GET /api/products HTTP/1.1" 200 -
+2025-03-06 00:00:22,072 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:00:22] "GET /api/waste-statistics HTTP/1.1" 200 -
+2025-03-06 00:00:22,076 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:00:22] "GET /api/waste-statistics HTTP/1.1" 200 -
+2025-03-06 00:00:22,080 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:00:22] "GET /api/notifications?status=pending HTTP/1.1" 200 -
+2025-03-06 00:00:22,084 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:00:22] "GET /api/notifications?status=pending HTTP/1.1" 200 -
+2025-03-06 00:00:44,124 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:00:44] "GET /api/products HTTP/1.1" 200 -
+2025-03-06 00:00:44,128 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:00:44] "GET /api/products HTTP/1.1" 200 -
+2025-03-06 00:00:44,134 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:00:44] "GET /api/waste-statistics HTTP/1.1" 200 -
+2025-03-06 00:00:44,140 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:00:44] "GET /api/waste-statistics HTTP/1.1" 200 -
+2025-03-06 00:00:44,151 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:00:44] "GET /api/notifications?status=pending HTTP/1.1" 200 -
+2025-03-06 00:00:44,155 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:00:44] "GET /api/notifications?status=pending HTTP/1.1" 200 -
+2025-03-06 00:02:13,880 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:13] "GET /api/products?status=&category=&expiry_days=&location= HTTP/1.1" 200 -
+2025-03-06 00:02:13,881 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:13] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:13,886 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:13] "GET /api/products?status=&category=&expiry_days=&location= HTTP/1.1" 200 -
+2025-03-06 00:02:13,888 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:13] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:14,857 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:14] "GET /api/products?status=expired HTTP/1.1" 200 -
+2025-03-06 00:02:14,858 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:14] "GET /api/waste-records?waste_type=&recyclable=&start_date=&end_date= HTTP/1.1" 200 -
+2025-03-06 00:02:14,862 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:14] "GET /api/products?status=expired HTTP/1.1" 200 -
+2025-03-06 00:02:14,864 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:14] "GET /api/waste-records?waste_type=&recyclable=&start_date=&end_date= HTTP/1.1" 200 -
+2025-03-06 00:02:19,586 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:19] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:19,587 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:19] "GET /api/products?status=&category=&expiry_days=&location= HTTP/1.1" 200 -
+2025-03-06 00:02:19,592 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:19] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:19,593 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:19] "GET /api/products?status=&category=&expiry_days=&location= HTTP/1.1" 200 -
+2025-03-06 00:02:20,923 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:20] "GET /api/products/10 HTTP/1.1" 200 -
+2025-03-06 00:02:20,926 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:20] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:20,930 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:20] "GET /api/products/10 HTTP/1.1" 200 -
+2025-03-06 00:02:20,933 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:20] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:22,145 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:22] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:22,146 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:22] "GET /api/products?status=&category=&expiry_days=&location= HTTP/1.1" 200 -
+2025-03-06 00:02:22,152 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:22] "GET /api/products?status=&category=&expiry_days=&location= HTTP/1.1" 200 -
+2025-03-06 00:02:22,153 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:22] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:27,426 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:27] "GET /api/waste-statistics?start_date=2025-02-05&end_date=2025-03-05 HTTP/1.1" 200 -
+2025-03-06 00:02:27,431 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:27] "GET /api/waste-statistics?start_date=2025-02-05&end_date=2025-03-05 HTTP/1.1" 200 -
+2025-03-06 00:02:27,434 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:27] "GET /api/waste-statistics/by-category?start_date=2025-02-05&end_date=2025-03-05 HTTP/1.1" 200 -
+2025-03-06 00:02:27,440 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:27] "GET /api/waste-statistics/over-time?start_date=2025-02-05&end_date=2025-03-05 HTTP/1.1" 200 -
+2025-03-06 00:02:27,441 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:27] "GET /api/waste-statistics/by-category?start_date=2025-02-05&end_date=2025-03-05 HTTP/1.1" 200 -
+2025-03-06 00:02:27,445 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:27] "GET /api/waste-statistics/over-time?start_date=2025-02-05&end_date=2025-03-05 HTTP/1.1" 200 -
+2025-03-06 00:02:34,087 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:34] "GET /api/customers HTTP/1.1" 200 -
+2025-03-06 00:02:34,092 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:34] "GET /api/customers HTTP/1.1" 200 -
+2025-03-06 00:02:38,781 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:38] "OPTIONS /api/customers/3 HTTP/1.1" 200 -
+2025-03-06 00:02:38,797 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:38] "DELETE /api/customers/3 HTTP/1.1" 200 -
+2025-03-06 00:02:40,405 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:40] "OPTIONS /api/customers/2 HTTP/1.1" 200 -
+2025-03-06 00:02:40,414 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:40] "DELETE /api/customers/2 HTTP/1.1" 200 -
+2025-03-06 00:02:41,834 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:41] "OPTIONS /api/customers/1 HTTP/1.1" 200 -
+2025-03-06 00:02:41,841 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:41] "DELETE /api/customers/1 HTTP/1.1" 200 -
+2025-03-06 00:02:44,824 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:44] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:44,825 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:44] "GET /api/products?status=&category=&expiry_days=&location= HTTP/1.1" 200 -
+2025-03-06 00:02:44,830 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:44] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:44,831 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:44] "GET /api/products?status=&category=&expiry_days=&location= HTTP/1.1" 200 -
+2025-03-06 00:02:48,043 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:48] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:48,044 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:48] "GET /api/products/10 HTTP/1.1" 200 -
+2025-03-06 00:02:48,050 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:48] "GET /api/products/10 HTTP/1.1" 200 -
+2025-03-06 00:02:48,051 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:48] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:50,510 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:50] "OPTIONS /api/products/10 HTTP/1.1" 200 -
+2025-03-06 00:02:50,521 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:50] "PUT /api/products/10 HTTP/1.1" 200 -
+2025-03-06 00:02:50,534 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:50] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:50,535 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:50] "GET /api/products?status=&category=&expiry_days=&location= HTTP/1.1" 200 -
+2025-03-06 00:02:50,539 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:50] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:50,540 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:50] "GET /api/products?status=&category=&expiry_days=&location= HTTP/1.1" 200 -
+2025-03-06 00:02:52,142 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:52] "GET /api/products/10 HTTP/1.1" 200 -
+2025-03-06 00:02:52,143 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:52] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:52,148 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:52] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:52,150 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:52] "GET /api/products/10 HTTP/1.1" 200 -
+2025-03-06 00:02:55,727 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:55] "OPTIONS /api/products/10 HTTP/1.1" 200 -
+2025-03-06 00:02:55,738 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:55] "PUT /api/products/10 HTTP/1.1" 200 -
+2025-03-06 00:02:55,750 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:55] "GET /api/products?status=&category=&expiry_days=&location= HTTP/1.1" 200 -
+2025-03-06 00:02:55,751 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:55] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:55,756 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:55] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:02:55,757 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:02:55] "GET /api/products?status=&category=&expiry_days=&location= HTTP/1.1" 200 -
+2025-03-06 00:03:35,281 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:35] "GET /api/customers HTTP/1.1" 200 -
+2025-03-06 00:03:35,284 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:35] "GET /api/customers HTTP/1.1" 200 -
+2025-03-06 00:03:36,861 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:36] "GET /api/waste-statistics?start_date=2025-02-05&end_date=2025-03-05 HTTP/1.1" 200 -
+2025-03-06 00:03:36,866 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:36] "GET /api/waste-statistics?start_date=2025-02-05&end_date=2025-03-05 HTTP/1.1" 200 -
+2025-03-06 00:03:36,868 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:36] "GET /api/waste-statistics/by-category?start_date=2025-02-05&end_date=2025-03-05 HTTP/1.1" 200 -
+2025-03-06 00:03:36,874 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:36] "GET /api/waste-statistics/by-category?start_date=2025-02-05&end_date=2025-03-05 HTTP/1.1" 200 -
+2025-03-06 00:03:36,875 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:36] "GET /api/waste-statistics/over-time?start_date=2025-02-05&end_date=2025-03-05 HTTP/1.1" 200 -
+2025-03-06 00:03:36,879 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:36] "GET /api/waste-statistics/over-time?start_date=2025-02-05&end_date=2025-03-05 HTTP/1.1" 200 -
+2025-03-06 00:03:37,658 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:37] "GET /api/products?status=expired HTTP/1.1" 200 -
+2025-03-06 00:03:37,659 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:37] "GET /api/waste-records?waste_type=&recyclable=&start_date=&end_date= HTTP/1.1" 200 -
+2025-03-06 00:03:37,663 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:37] "GET /api/waste-records?waste_type=&recyclable=&start_date=&end_date= HTTP/1.1" 200 -
+2025-03-06 00:03:37,664 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:37] "GET /api/products?status=expired HTTP/1.1" 200 -
+2025-03-06 00:03:38,596 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:38] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:03:38,597 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:38] "GET /api/products?status=&category=&expiry_days=&location= HTTP/1.1" 200 -
+2025-03-06 00:03:38,601 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:38] "GET /api/categories HTTP/1.1" 200 -
+2025-03-06 00:03:38,604 - werkzeug - INFO - 127.0.0.1 - - [06/Mar/2025 00:03:38] "GET /api/products?status=&category=&expiry_days=&location= HTTP/1.1" 200 -
