@@ -1,25 +1,3 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Button, Form, Row, Col, Alert } from 'react-bootstrap';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { FaPlus, FaFilter, FaSync } from 'react-icons/fa';
-import InventoryTable from '../components/InventoryTable';
-import { productsApi, categoriesApi } from '../services/api';
-
-const Inventory = () => {
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [filters, setFilters] = useState({
-    status: '',
-    category: '',
-    expiry_days: '',
-    location: ''
-  });
-  const [showFilters, setShowFilters] = useState(false);
-  
-  const location = useLocation();
   const navigate = useNavigate();
   
   useEffect(() => {
