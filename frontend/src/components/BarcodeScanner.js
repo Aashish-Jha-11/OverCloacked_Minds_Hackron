@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { Card, Form, Button, Alert, Spinner, Modal } from 'react-bootstrap';
-import { FaBarcode, FaCamera, FaQrcode, FaTimes } from 'react-icons/fa';
+import { FaBarcode, FaCamera, FaQrcode, FaTimes, FaVolumeUp } from 'react-icons/fa';
 import { productsApi } from '../services/api';
 import { Html5Qrcode } from 'html5-qrcode';
+import soundEffects from '../utils/soundEffects';
+import '../styles/animations.css';
 
 const BarcodeScanner = forwardRef(({ onScanComplete }, ref) => {
   const [barcode, setBarcode] = useState('');
@@ -11,6 +13,7 @@ const BarcodeScanner = forwardRef(({ onScanComplete }, ref) => {
   const [scanResult, setScanResult] = useState(null);
   const [showScanner, setShowScanner] = useState(false);
   const [scannerActive, setScannerActive] = useState(false);
+  const [scannerAnimation, setScannerAnimation] = useState(false);
   const fileInputRef = useRef(null);
   const scannerRef = useRef(null);
   const scannerContainerRef = useRef(null);
@@ -33,34 +36,43 @@ const BarcodeScanner = forwardRef(({ onScanComplete }, ref) => {
   const handleManualInput = (e) => {
     setBarcode(e.target.value);
     setError('');
+    soundEffects.play('typing');
   };
   
   const handleScan = async () => {
     if (!barcode) {
       setError('Please enter a barcode');
+      soundEffects.playError();
       return;
     }
     
     setIsScanning(true);
     setError('');
+    soundEffects.play('scan');
     
     try {
       const response = await productsApi.scan(barcode);
       setScanResult(response.data);
       
-      if (response.data.found && onScanComplete) {
-        onScanComplete(response.data.product);
+      if (response.data.found) {
+        soundEffects.playSuccess();
+        if (onScanComplete) {
+          onScanComplete(response.data.product);
+        }
+      } else {
+        soundEffects.playError();
       }
     } catch (err) {
       console.error('Error scanning barcode:', err);
       setError('Error scanning barcode. Please try again.');
+      soundEffects.playError();
     } finally {
       setIsScanning(false);
     }
   };
   
   // Expose a method to programmatically scan a barcode
-  React.useImperativeHandle(ref, () => ({
+  useImperativeHandle(ref, () => ({
     scanBarcode: (code) => {
       setBarcode(code);
       // Trigger scan with a slight delay to ensure state is updated
@@ -71,9 +83,19 @@ const BarcodeScanner = forwardRef(({ onScanComplete }, ref) => {
   const startRealCameraScan = () => {
     setShowScanner(true);
     setError('');
-    
+    soundEffects.play('click');
     // We'll initialize the scanner in the useEffect after the modal is shown
   };
+  
+  // Scanner animation effect
+  useEffect(() => {
+    if (showScanner) {
+      const interval = setInterval(() => {
+        setScannerAnimation(prev => !prev);
+      }, 2000);
+      return () => clearInterval(interval);
+    }
+  }, [showScanner]);
   
   // Initialize the scanner when the modal is shown
   useEffect(() => {
@@ -98,10 +120,12 @@ const BarcodeScanner = forwardRef(({ onScanComplete }, ref) => {
         }
       ).then(() => {
         setScannerActive(true);
+        soundEffects.play('notification');
       }).catch(err => {
         console.error('Error starting scanner:', err);
         setError('Could not start camera scanner. Please check camera permissions.');
         setShowScanner(false);
+        soundEffects.playError();
       });
     }
     
@@ -139,23 +163,28 @@ const BarcodeScanner = forwardRef(({ onScanComplete }, ref) => {
     setShowScanner(false);
     setIsScanning(true);
     setBarcode(scannedBarcode);
+    soundEffects.play('scan');
     
     try {
       const response = await productsApi.scan(scannedBarcode);
       setScanResult(response.data);
       
-      if (response.data.found && onScanComplete) {
-        onScanComplete(response.data.product);
+      if (response.data.found) {
+        soundEffects.playSuccess();
+        if (onScanComplete) {
+          onScanComplete(response.data.product);
+        }
+      } else {
+        soundEffects.playError();
       }
     } catch (err) {
       console.error('Error scanning barcode:', err);
       setError('Error scanning barcode. Please try again.');
+      soundEffects.playError();
     } finally {
       setIsScanning(false);
     }
   };
-  
-  // Removed simulate camera scan function
   
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -165,6 +194,7 @@ const BarcodeScanner = forwardRef(({ onScanComplete }, ref) => {
     // For demo purposes, we'll just simulate scanning with a delay
     setIsScanning(true);
     setError('');
+    soundEffects.play('scan');
     
     setTimeout(async () => {
       try {
@@ -175,27 +205,69 @@ const BarcodeScanner = forwardRef(({ onScanComplete }, ref) => {
         setScanResult(response.data);
         setBarcode(randomBarcode);
         
-        if (response.data.found && onScanComplete) {
-          onScanComplete(response.data.product);
+        if (response.data.found) {
+          soundEffects.playSuccess();
+          if (onScanComplete) {
+            onScanComplete(response.data.product);
+          }
+        } else {
+          soundEffects.playError();
         }
       } catch (err) {
         console.error('Error scanning barcode:', err);
         setError('Error scanning barcode. Please try again.');
+        soundEffects.playError();
       } finally {
         setIsScanning(false);
       }
     }, 1500); // Simulate scanning delay
   };
   
+  const handleButtonMouseEnter = () => {
+    soundEffects.playHover();
+  };
+  
+  const handleCloseScanner = () => {
+    if (scannerRef.current && scannerActive) {
+      try {
+        scannerRef.current.stop()
+          .then(() => {
+            setScannerActive(false);
+            setShowScanner(false);
+            soundEffects.play('click');
+          })
+          .catch(err => {
+            console.error('Error stopping scanner:', err);
+            setScannerActive(false);
+            setShowScanner(false);
+          });
+      } catch (err) {
+        console.error('Error during manual stop:', err);
+        setScannerActive(false);
+        setShowScanner(false);
+      }
+    } else {
+      setShowScanner(false);
+    }
+  };
+  
   return (
     <>
-      <Card className="shadow-sm">
-        <Card.Header className="bg-primary text-white">
-          <FaBarcode className="me-2" />
-          Barcode Scanner
+      <Card className="shadow-sm scale-in">
+        <Card.Header className="bg-primary text-white d-flex justify-content-between align-items-center">
+          <div className="d-flex align-items-center">
+            <FaBarcode className="me-2 bounce" />
+            <span>Barcode Scanner</span>
+          </div>
+          <div 
+            className="scanner-icon rotate-gear"
+            style={{ opacity: 0.7, fontSize: '1.2rem' }}
+          >
+            <FaVolumeUp />
+          </div>
         </Card.Header>
         <Card.Body>
-          <Form.Group className="mb-3">
+          <Form.Group className="mb-3 slide-up-animation">
             <Form.Label>Enter Barcode Manually</Form.Label>
             <Form.Control
               type="text"
@@ -203,17 +275,23 @@ const BarcodeScanner = forwardRef(({ onScanComplete }, ref) => {
               value={barcode}
               onChange={handleManualInput}
               disabled={isScanning}
+              className="form-control-sci-fi"
             />
           </Form.Group>
           
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error && (
+            <Alert variant="danger" className="shake">
+              {error}
+            </Alert>
+          )}
           
-          <div className="d-flex justify-content-between mb-3">
+          <div className="d-flex justify-content-between mb-3 slide-up-animation" style={{ animationDelay: '0.1s' }}>
             <Button 
               variant="primary" 
               onClick={handleScan} 
               disabled={isScanning}
-              className="flex-grow-1 me-2"
+              className="flex-grow-1 me-2 hover-scale"
+              onMouseEnter={handleButtonMouseEnter}
             >
               {isScanning ? (
                 <>
@@ -233,7 +311,8 @@ const BarcodeScanner = forwardRef(({ onScanComplete }, ref) => {
               onClick={startRealCameraScan} 
               disabled={isScanning}
               title="Open Camera"
-              className="flex-grow-1 me-2"
+              className="flex-grow-1 me-2 hover-scale"
+              onMouseEnter={handleButtonMouseEnter}
             >
               <FaCamera className="me-2" />
               Open Camera
@@ -241,9 +320,13 @@ const BarcodeScanner = forwardRef(({ onScanComplete }, ref) => {
             
             <Button 
               variant="secondary" 
-              onClick={() => fileInputRef.current.click()} 
+              onClick={() => {
+                fileInputRef.current.click();
+                soundEffects.play('click');
+              }} 
               disabled={isScanning}
-              className="flex-grow-1"
+              className="flex-grow-1 hover-scale"
+              onMouseEnter={handleButtonMouseEnter}
             >
               <FaQrcode className="me-2" />
               Upload Image
@@ -259,7 +342,10 @@ const BarcodeScanner = forwardRef(({ onScanComplete }, ref) => {
           </div>
         
         {scanResult && (
-          <Alert variant={scanResult.found ? "success" : "warning"}>
+          <Alert 
+            variant={scanResult.found ? "success" : "warning"} 
+            className={scanResult.found ? "scale-in" : "shake"}
+          >
             {scanResult.found ? (
               <>
                 <strong>Product Found:</strong> {scanResult.product.name}<br />
@@ -281,20 +367,16 @@ const BarcodeScanner = forwardRef(({ onScanComplete }, ref) => {
     {/* Camera Scanner Modal */}
     <Modal 
       show={showScanner} 
-      onHide={() => {
-        if (scannerRef.current) {
-          scannerRef.current.stop().catch(err => console.error(err));
-        }
-        setShowScanner(false);
-      }}
+      onHide={handleCloseScanner}
       centered
       backdrop="static"
       size="lg"
+      className="scanner-modal"
     >
       <Modal.Header closeButton>
         <Modal.Title>
-          <FaCamera className="me-2" />
-          Scan Barcode or QR Code
+          <FaCamera className="me-2 pulse-border" />
+          <span className="typing-effect">Scan Barcode or QR Code</span>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -320,42 +402,38 @@ const BarcodeScanner = forwardRef(({ onScanComplete }, ref) => {
               transform: 'translate(-50%, -50%)',
               width: '280px',
               height: '180px',
-              border: '2px solid #00ff00',
+              border: `2px solid ${scannerAnimation ? '#0dcaf0' : '#00ff00'}`,
+              transition: 'border-color 1s ease',
               borderRadius: '4px',
-              boxShadow: '0 0 0 4000px rgba(0, 0, 0, 0.5)',
+              boxShadow: `0 0 0 4000px rgba(0, 0, 0, 0.5), 0 0 20px ${scannerAnimation ? 'rgba(13, 202, 240, 0.7)' : 'rgba(0, 255, 0, 0.7)'}`,
               zIndex: 10
             }}
-          ></div>
+          >
+            {/* Scanning line animation */}
+            <div
+              style={{
+                position: 'absolute',
+                height: '2px',
+                width: '100%',
+                backgroundColor: scannerAnimation ? '#0dcaf0' : '#00ff00',
+                top: scannerAnimation ? '0%' : '100%',
+                left: 0,
+                transition: 'top 2s ease-in-out, background-color 1s ease',
+                boxShadow: `0 0 10px ${scannerAnimation ? 'rgba(13, 202, 240, 0.7)' : 'rgba(0, 255, 0, 0.7)'}`
+              }}
+            ></div>
+          </div>
         </div>
-        <p className="text-center mt-3">
-          Position the barcode or QR code within the green rectangle.
+        <p className="text-center mt-3 fade-in" style={{ animationDelay: '0.5s' }}>
+          Position the barcode or QR code within the highlighted rectangle.
         </p>
       </Modal.Body>
       <Modal.Footer>
         <Button 
           variant="secondary" 
-          onClick={() => {
-            if (scannerRef.current && scannerActive) {
-              try {
-                scannerRef.current.stop()
-                  .then(() => {
-                    setScannerActive(false);
-                    setShowScanner(false);
-                  })
-                  .catch(err => {
-                    console.error('Error stopping scanner:', err);
-                    setScannerActive(false);
-                    setShowScanner(false);
-                  });
-              } catch (err) {
-                console.error('Error during manual stop:', err);
-                setScannerActive(false);
-                setShowScanner(false);
-              }
-            } else {
-              setShowScanner(false);
-            }
-          }}
+          onClick={handleCloseScanner}
+          className="hover-scale"
+          onMouseEnter={handleButtonMouseEnter}
         >
           <FaTimes className="me-2" />
           Cancel

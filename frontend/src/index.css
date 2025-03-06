@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
 
+/* Reset and base styles */
 body {
   margin: 0;
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -8,19 +10,47 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f8f9fa;
-  color: #333;
+  color: #212529;
+  line-height: 1.6;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* Enhanced Typography */
+h1, h2, h3, h4, h5, h6 {
+  color: #1a1a1a;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 1rem;
+}
+
+p {
+  color: #333;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+/* Link styles */
+a {
+  color: #0d6efd;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #0b5ed7;
+  text-decoration: none;
 }
 
 /* Custom styles */
 .card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: #ffffff;
   border: none;
   border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
@@ -32,6 +62,19 @@ code {
   background-color: transparent;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   font-weight: 600;
+  color: #1a1a1a;
+  padding: 1.25rem;
+}
+
+.card .card-title {
+  color: #1a1a1a;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.card .card-text {
+  color: #333;
+  line-height: 1.6;
 }
 
 .dashboard-card {
@@ -99,15 +142,16 @@ code {
 
 /* Button styles */
 .btn {
-  border-radius: 6px;
   font-weight: 500;
   padding: 0.5rem 1rem;
+  border-radius: 6px;
   transition: all 0.3s ease;
 }
 
 .btn-primary {
   background-color: #0d6efd;
   border-color: #0d6efd;
+  color: #ffffff;
 }
 
 .btn-primary:hover {
@@ -120,6 +164,7 @@ code {
 .btn-success {
   background-color: #198754;
   border-color: #198754;
+  color: #ffffff;
 }
 
 .btn-success:hover {
@@ -131,17 +176,26 @@ code {
 
 /* Table styles */
 .table {
-  border-collapse: separate;
-  border-spacing: 0;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .table thead th {
   background-color: #f8f9fa;
   border-bottom: 2px solid #dee2e6;
+  color: #495057;
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.8rem;
   letter-spacing: 0.5px;
+  padding: 1rem;
+}
+
+.table tbody td {
+  color: #333;
+  padding: 1rem;
+  vertical-align: middle;
 }
 
 /* Form control styles */
@@ -149,12 +203,21 @@ code {
   border-radius: 6px;
   padding: 0.5rem 0.75rem;
   border: 1px solid #ced4da;
+  color: #333;
+  background-color: #ffffff;
   transition: all 0.3s ease;
 }
 
 .form-control:focus, .form-select:focus {
   border-color: #86b7fe;
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  background-color: #ffffff;
+}
+
+.form-label {
+  color: #495057;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
 /* Badge styles */
@@ -193,4 +256,152 @@ code {
 .hover-lift:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading Animation Styles */
+.loading-screen {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-bar-container {
+  width: 300px;
+  height: 4px;
+  background-color: rgba(13, 110, 253, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.loading-bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #0d6efd, #0dcaf0);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+@keyframes loading {
+  0% { width: 0; }
+  100% { width: 100%; }
+}
+
+/* Page Transitions */
+.route-container {
+  position: relative;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Toast Notifications Enhancement */
+.Toastify__toast {
+  border-radius: 8px !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.Toastify__toast-container {
+  z-index: 9999 !important;
+}
+
+.Toastify__progress-bar {
+  height: 3px !important;
+}
+
+/* Sci-fi font for headings */
+.sci-fi-title {
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Glowing effect for important elements */
+.glow-effect {
+  box-shadow: 0 0 10px rgba(13, 202, 240, 0.7);
+  animation: glowPulse 2s infinite alternate;
+}
+
+@keyframes glowPulse {
+  from { box-shadow: 0 0 10px rgba(13, 202, 240, 0.7); }
+  to { box-shadow: 0 0 20px rgba(13, 202, 240, 0.9); }
+}
+
+/* Dashboard notification badge pulse */
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  animation: badgePulse 2s infinite;
+}
+
+@keyframes badgePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* Futuristic backdrop styling */
+.backdrop-blur {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+}
+
+/* Animated button focus */
+.btn:focus {
+  animation: buttonFocus 0.3s ease-out;
+}
+
+@keyframes buttonFocus {
+  0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.5); }
+  100% { box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.5); }
+}
+
+/* Utility Classes */
+.text-primary { color: #0d6efd !important; }
+.text-success { color: #198754 !important; }
+.text-warning { color: #ffc107 !important; }
+.text-danger { color: #dc3545 !important; }
+.text-info { color: #0dcaf0 !important; }
+.text-dark { color: #212529 !important; }
+.text-muted { color: #6c757d !important; }
+
+.bg-light { background-color: #f8f9fa !important; }
+.bg-white { background-color: #ffffff !important; }
+
+/* Desktop Optimizations */
+@media (min-width: 992px) {
+  .container {
+    max-width: 1140px;
+    padding: 0 2rem;
+  }
+
+  .card {
+    margin-bottom: 2rem;
+  }
+
+  .table-responsive {
+    overflow: visible;
+  }
+
+  .form-control, .form-select {
+    font-size: 1rem;
+  }
 }

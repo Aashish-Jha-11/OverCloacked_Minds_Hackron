@@ -38,4 +38,10 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx'],
   },
+  ignoreWarnings: [
+    {
+      module: /html5-qrcode/,
+      message: /Failed to parse source map/,
+    },
+  ],
 };

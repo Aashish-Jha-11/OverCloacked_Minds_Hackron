@@ -239,6 +239,52 @@ def create_category():
         db.session.rollback()
         return jsonify({'error': str(e)}), 400
 
+@api.route('/categories/<int:category_id>', methods=['PUT'])
+def update_category(category_id):
+    """Update an existing category"""
+    category = Category.query.get_or_404(category_id)
+    data = request.json
+    
+    # Update fields
+    category.name = data.get('name', category.name)
+    category.description = data.get('description', category.description)
+    category.waste_type = data.get('waste_type', category.waste_type)
+    category.recyclable = data.get('recyclable', category.recyclable)
+    category.discount_threshold = data.get('discount_threshold', category.discount_threshold)
+    
+    try:
+        db.session.commit()
+        
+        # Check all products in this category for expiry status updates
+        products = Product.query.filter_by(category=category.name).all()
+        for product in products:
+            product.check_expiry_status()
+        
+        return jsonify(category.to_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+@api.route('/categories/<int:category_id>', methods=['DELETE'])
+def delete_category(category_id):
+    """Delete a category"""
+    category = Category.query.get_or_404(category_id)
+    
+    # Check if there are any products using this category
+    products_count = Product.query.filter_by(category=category.name).count()
+    if products_count > 0:
+        return jsonify({
+            'error': f'Cannot delete category: {products_count} products are still using this category. Reassign these products first.'
+        }), 400
+    
+    try:
+        db.session.delete(category)
+        db.session.commit()
+        return jsonify({'message': f'Category {category_id} deleted successfully'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
 # Waste Record Routes
 @api.route('/waste-records', methods=['GET'])
 def get_waste_records():

@@ -83,7 +83,17 @@ class Product(db.Model):
             self.status = ProductStatus.EXPIRED.value
         elif days_until_expiry <= discount_threshold and self.status == ProductStatus.ACTIVE.value:
             # Apply discount based on category and days until expiry
-            discount_percentage = min(70, (discount_threshold - days_until_expiry) * 10)
+            # Calculate discount percentage proportionally to how close to expiry
+            # The closer to expiry, the higher the discount
+            days_left_percentage = days_until_expiry / discount_threshold
+            base_discount = 30  # Starting discount percentage
+            max_discount = 70   # Maximum discount percentage
+            
+            # Progressive discount: increases as expiry date approaches
+            # At threshold days: minimal discount, At 0 days: maximum discount
+            discount_percentage = base_discount + (max_discount - base_discount) * (1 - days_left_percentage)
+            discount_percentage = round(discount_percentage, 0)  # Round to nearest integer percentage
+            
             self.discounted_price = round(self.price * (1 - discount_percentage / 100), 2)
             self.status = ProductStatus.DISCOUNTED.value
             

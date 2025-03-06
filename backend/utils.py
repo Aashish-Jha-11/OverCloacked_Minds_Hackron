@@ -82,39 +82,54 @@ def get_waste_statistics(start_date=None, end_date=None):
     if not end_date:
         end_date = datetime.utcnow().date()
     
-    waste_records = WasteRecord.query.filter(
-        WasteRecord.disposal_date >= start_date,
-        WasteRecord.disposal_date <= end_date
-    ).all()
-    
-    # Calculate statistics
-    total_waste = sum(record.quantity for record in waste_records)
-    recyclable_waste = sum(record.quantity for record in waste_records if record.recyclable)
-    non_recyclable_waste = total_waste - recyclable_waste
-    
-    waste_by_type = {}
-    for record in waste_records:
-        if record.waste_type not in waste_by_type:
-            waste_by_type[record.waste_type] = 0
-        waste_by_type[record.waste_type] += record.quantity
-    
-    waste_by_date = {}
-    for record in waste_records:
-        date_str = record.disposal_date.isoformat()
-        if date_str not in waste_by_date:
-            waste_by_date[date_str] = 0
-        waste_by_date[date_str] += record.quantity
-    
-    return {
-        'total_waste': total_waste,
-        'recyclable_waste': recyclable_waste,
-        'non_recyclable_waste': non_recyclable_waste,
-        'recyclable_percentage': (recyclable_waste / total_waste * 100) if total_waste > 0 else 0,
-        'waste_by_type': waste_by_type,
-        'waste_by_date': waste_by_date,
-        'start_date': start_date.isoformat(),
-        'end_date': end_date.isoformat()
-    }
+    try:
+        waste_records = WasteRecord.query.filter(
+            WasteRecord.disposal_date >= start_date,
+            WasteRecord.disposal_date <= end_date
+        ).all()
+        
+        # Calculate statistics with safe defaults
+        total_waste = sum(record.quantity for record in waste_records) if waste_records else 0
+        recyclable_waste = sum(record.quantity for record in waste_records if record.recyclable) if waste_records else 0
+        non_recyclable_waste = total_waste - recyclable_waste
+        
+        waste_by_type = {}
+        for record in waste_records:
+            waste_type = record.waste_type or 'Unspecified'
+            if waste_type not in waste_by_type:
+                waste_by_type[waste_type] = 0
+            waste_by_type[waste_type] += record.quantity
+        
+        waste_by_date = {}
+        for record in waste_records:
+            date_str = record.disposal_date.isoformat()
+            if date_str not in waste_by_date:
+                waste_by_date[date_str] = 0
+            waste_by_date[date_str] += record.quantity
+        
+        return {
+            'total_waste': total_waste,
+            'recyclable_waste': recyclable_waste,
+            'non_recyclable_waste': non_recyclable_waste,
+            'recyclable_percentage': (recyclable_waste / total_waste * 100) if total_waste > 0 else 0,
+            'waste_by_type': waste_by_type,
+            'waste_by_date': waste_by_date,
+            'start_date': start_date.isoformat(),
+            'end_date': end_date.isoformat()
+        }
+    except Exception as e:
+        print(f"Error calculating waste statistics: {str(e)}")
+        # Return safe default values if there's an error
+        return {
+            'total_waste': 0,
+            'recyclable_waste': 0,
+            'non_recyclable_waste': 0,
+            'recyclable_percentage': 0,
+            'waste_by_type': {},
+            'waste_by_date': {},
+            'start_date': start_date.isoformat(),
+            'end_date': end_date.isoformat()
+        }
 
 def sort_inventory_by_fefo():
     """Sort inventory by First-Expiry-First-Out (FEFO) principle"""

@@ -13,18 +13,21 @@
   /* Backgrounds & Text */
   --light-bg: #f8f9fa; /* Soft light background */
   --dark-bg: #212529; /* Professional dark background */
-  --text-color: #343a40; /* Rich dark text */
+  --text-primary: #212529; /* Primary text color */
+  --text-secondary: #495057; /* Secondary text color */
+  --text-muted: #6c757d; /* Muted text color */
+  --text-light: #f8f9fa; /* Light text color */
   --card-bg: #ffffff; /* Clean white cards */
   --card-border: rgba(0, 0, 0, 0.1); /* Subtle card border */
   
   /* UI Effects */
-  --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   --transition-speed: 0.3s;
 }
 
 body {
   background-color: var(--light-bg);
-  color: var(--text-color);
+  color: var(--text-primary);
   font-family: 'Poppins', sans-serif;
   line-height: 1.6;
   transition: background-color var(--transition-speed) ease;
@@ -38,7 +41,7 @@ body {
 }
 
 .navbar-brand, .nav-link {
-  color: #ffffff !important;
+  color: var(--text-light) !important;
   font-weight: 500;
   transition: color var(--transition-speed);
 }
@@ -59,6 +62,7 @@ body {
   background: var(--primary-color);
   border: none;
   box-shadow: var(--shadow);
+  color: var(--text-light);
 }
 
 .btn-primary:hover {
@@ -92,8 +96,15 @@ body {
   border-bottom: 2px solid var(--primary-color);
   font-weight: 600;
   text-transform: uppercase;
+  color: var(--text-secondary);
   font-size: 0.85rem;
   padding: 1rem;
+}
+
+.table tbody td {
+  color: var(--text-primary);
+  padding: 1rem;
+  vertical-align: middle;
 }
 
 /* Smooth Form Controls */
@@ -101,12 +112,34 @@ body {
   border-radius: 6px;
   padding: 0.5rem 0.75rem;
   border: 1px solid #ced4da;
+  color: var(--text-primary);
+  background-color: var(--card-bg);
   transition: all var(--transition-speed);
 }
 
 .form-control:focus, .form-select:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.form-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+/* Card Text Colors */
+.card-title {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.card-text {
+  color: var(--text-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
 }
 
 /* Custom Scrollbar */

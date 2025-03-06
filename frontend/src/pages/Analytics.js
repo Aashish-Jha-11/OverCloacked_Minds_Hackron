@@ -30,7 +30,13 @@ import {
   FaRocket,
   FaSatellite,
   FaGlobe,
-  FaDatabase
+  FaDatabase,
+  FaExpand,
+  FaExclamationTriangle,
+  FaInfoCircle, 
+  FaCloudDownloadAlt, 
+  FaPrint, 
+  FaTable 
 } from 'react-icons/fa';
 import { wasteRecordsApi } from '../services/api';
 
@@ -65,7 +71,18 @@ const Analytics = () => {
     recyclableWaste: 0,
     recyclablePercentage: 0
   });
+  const [activeMetric, setActiveMetric] = useState('total');
+  const [isFullscreen, setIsFullscreen] = useState(false);
   
+  // Add new state variables for enhanced features
+  const [view, setView] = useState('charts'); // 'charts' or 'table'
+  const [selectedChart, setSelectedChart] = useState('distribution');
+  const [compareMode, setCompareMode] = useState(false);
+  const [comparisonDateRange, setComparisonDateRange] = useState({
+    start_date: new Date(new Date().setMonth(new Date().getMonth() - 2)).toISOString().split('T')[0],
+    end_date: new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0]
+  });
+
   useEffect(() => {
     fetchWasteStatistics();
   }, []);
@@ -215,10 +232,31 @@ const Analytics = () => {
   };
   
   const exportData = (type) => {
-    // This would be implemented to export data in CSV or PDF format
-    toast.info(`Export ${type} functionality would be implemented here`);
+    const data = {
+      statistics: wasteStats,
+      categoryData: wasteByCategory,
+      timelineData: wasteOverTime
+    };
+
+    if (type === 'CSV') {
+      // Convert data to CSV
+      const csvContent = generateCSV(data);
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `waste_analytics_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+    } else if (type === 'PDF') {
+      // Implement PDF export
+      toast.info('PDF export functionality will be implemented');
+    }
   };
-  
+
+  const generateCSV = (data) => {
+    // Implementation of CSV generation
+    // ...
+  };
+
   // Chart configurations with sci-fi theme colors
   const sciFiColors = {
     primary: 'rgba(0, 255, 255, 0.7)', // Cyan
@@ -231,14 +269,94 @@ const Analytics = () => {
     warning: 'rgba(255, 165, 0, 0.7)', // Orange
     success: 'rgba(50, 205, 50, 0.7)', // Lime green
     info: 'rgba(30, 144, 255, 0.7)', // Dodger blue
+    darkGradient: 'linear-gradient(180deg, rgba(25,25,40,0.95) 0%, rgba(15,15,30,0.98) 100%)',
+    glowEffect: '0 0 15px rgba(0, 255, 255, 0.5)',
+    gradient: {
+      primary: 'linear-gradient(45deg, rgba(0,255,255,0.7), rgba(0,128,255,0.7))',
+      secondary: 'linear-gradient(45deg, rgba(255,0,255,0.7), rgba(128,0,255,0.7))',
+      success: 'linear-gradient(45deg, rgba(0,255,0,0.7), rgba(0,128,0,0.7))',
+      warning: 'linear-gradient(45deg, rgba(255,165,0,0.7), rgba(255,140,0,0.7))',
+      danger: 'linear-gradient(45deg, rgba(255,0,0,0.7), rgba(139,0,0,0.7))',
+    }
   };
-  
+
   const generateGradient = (ctx, color1, color2) => {
     if (!ctx) return color1;
     const gradient = ctx.createLinearGradient(0, 0, 0, 400);
     gradient.addColorStop(0, color1);
     gradient.addColorStop(1, color2);
     return gradient;
+  };
+
+  // Define enhancedChartOptions
+  const enhancedChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'nearest',
+      axis: 'x',
+      intersect: false
+    },
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          font: {
+            family: "'Orbitron', sans-serif",
+            size: 12
+          },
+          color: 'rgba(255, 255, 255, 0.8)',
+          usePointStyle: true,
+          padding: 20
+        }
+      },
+      tooltip: {
+        backgroundColor: sciFiColors.background,
+        titleFont: {
+          family: "'Orbitron', sans-serif",
+          size: 14,
+          weight: 'bold'
+        },
+        bodyFont: {
+          family: "'Roboto', sans-serif",
+          size: 12
+        },
+        borderColor: sciFiColors.primary,
+        borderWidth: 1,
+        padding: 12,
+        displayColors: true,
+        callbacks: {
+          label: function(context) {
+            let label = context.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            if (context.parsed.y !== null) {
+              label += context.parsed.y.toLocaleString();
+            }
+            return label;
+          }
+        }
+      },
+      datalabels: {
+        color: sciFiColors.highlight,
+        font: {
+          weight: 'bold'
+        },
+        formatter: (value) => value.toLocaleString()
+      }
+    },
+    transitions: {
+      active: {
+        animation: {
+          duration: 400
+        }
+      }
+    },
+    animation: {
+      duration: 2000,
+      easing: 'easeInOutQuart'
+    }
   };
   
   // Waste Type Chart (Doughnut)
@@ -257,7 +375,7 @@ const Analytics = () => {
       },
     ],
   } : null;
-  
+
   // Waste by Category Chart (Bar)
   const wasteByCategoryChartData = wasteByCategory ? {
     labels: wasteByCategory.map(item => item.category),
@@ -293,7 +411,7 @@ const Analytics = () => {
     datasets: [
       {
         label: 'Total Waste',
-        data: wasteOverTime.map(item => item.total_quantity),
+        data: wasteOverTime.map(item => item.total_quantity || 0),
         borderColor: sciFiColors.secondary,
         backgroundColor: 'rgba(255, 0, 255, 0.1)',
         tension: 0.4,
@@ -302,11 +420,11 @@ const Analytics = () => {
         pointBorderColor: sciFiColors.highlight,
         pointRadius: 4,
         pointHoverRadius: 7,
-        borderWidth: 3,
+        borderWidth: 3
       },
       {
         label: 'Recyclable Waste',
-        data: wasteOverTime.map(item => item.recyclable_quantity),
+        data: wasteOverTime.map(item => item.recyclable_quantity || 0),
         borderColor: sciFiColors.tertiary,
         backgroundColor: 'rgba(0, 255, 0, 0.1)',
         tension: 0.4,
@@ -315,138 +433,242 @@ const Analytics = () => {
         pointBorderColor: sciFiColors.highlight,
         pointRadius: 4,
         pointHoverRadius: 7,
-        borderWidth: 3,
-      },
-    ],
-  } : null;
-  
-  // Waste Efficiency Radar Chart
-  const wasteEfficiencyData = wasteStats ? {
-    labels: ['Recycling Rate', 'Waste Reduction', 'Resource Recovery', 'Waste Diversion', 'Processing Efficiency', 'Collection Efficiency'],
-    datasets: [
-      {
-        label: 'Current Performance',
-        data: [
-          wasteStats.recyclable_percentage,
-          Math.min(85, 60 + Math.random() * 25),
-          Math.min(90, 65 + Math.random() * 25),
-          Math.min(80, 55 + Math.random() * 25),
-          Math.min(95, 70 + Math.random() * 25),
-          Math.min(90, 65 + Math.random() * 25),
-        ],
-        backgroundColor: 'rgba(0, 255, 255, 0.2)',
-        borderColor: sciFiColors.primary,
-        borderWidth: 2,
-        pointBackgroundColor: sciFiColors.primary,
-        pointBorderColor: sciFiColors.highlight,
-        pointHoverBackgroundColor: sciFiColors.highlight,
-        pointHoverBorderColor: sciFiColors.primary,
-        pointRadius: 5,
-        pointHoverRadius: 8,
-      },
-      {
-        label: 'Target Performance',
-        data: [85, 80, 90, 75, 95, 85],
-        backgroundColor: 'rgba(255, 255, 0, 0.1)',
-        borderColor: sciFiColors.quaternary,
-        borderWidth: 2,
-        pointBackgroundColor: sciFiColors.quaternary,
-        pointBorderColor: sciFiColors.highlight,
-        pointHoverBackgroundColor: sciFiColors.highlight,
-        pointHoverBorderColor: sciFiColors.quaternary,
-        pointRadius: 5,
-        pointHoverRadius: 8,
+        borderWidth: 3
       }
-    ],
+    ]
   } : null;
+
+  if (loading) {
+    return (
+      <div className="analytics-container" style={{ 
+        background: sciFiColors.darkGradient,
+        minHeight: '100vh',
+        padding: '2rem'
+      }}>
+        <div className="text-center p-5">
+          <div className="position-relative" style={{ width: '80px', height: '80px', margin: '0 auto' }}>
+            <div className="spinner-border text-primary" role="status" style={{ width: '80px', height: '80px' }}>
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <div className="position-absolute" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+              <FaRocket className="text-primary" style={{ animation: 'pulse 1.5s infinite' }} />
+            </div>
+          </div>
+          <p className="mt-3" style={{ color: 'var(--primary-color)', letterSpacing: '1px' }}>INITIALIZING ANALYTICS...</p>
+        </div>
+      </div>
+    );
+  }
   
-  return (
-    <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1>Waste Analytics</h1>
-        <div>
-          <Button 
-            variant="outline-primary" 
-            className="me-2"
-            onClick={() => exportData('CSV')}
-          >
-            <FaDownload className="me-2" />
-            Export CSV
+  if (error) {
+    return (
+      <div className="analytics-container" style={{ 
+        background: sciFiColors.darkGradient,
+        minHeight: '100vh',
+        padding: '2rem'
+      }}>
+        <Alert variant="danger" className="sci-fi-border">
+          <Alert.Heading>
+            <FaExclamationTriangle className="me-2" /> SYSTEM MALFUNCTION
+          </Alert.Heading>
+          <p>{error}</p>
+          <Button variant="danger" onClick={fetchWasteStatistics}>
+            <FaSync className="me-2" /> RETRY
           </Button>
+        </Alert>
+      </div>
+    );
+  }
+
+  if (!wasteStats) {
+    return (
+      <div className="analytics-container" style={{ 
+        background: sciFiColors.darkGradient,
+        minHeight: '100vh',
+        padding: '2rem'
+      }}>
+        <Alert variant="info">
+          <Alert.Heading>
+            <FaDatabase className="me-2" /> NO DATA AVAILABLE
+          </Alert.Heading>
+          <p>No waste statistics data is currently available.</p>
+          <Button variant="primary" onClick={fetchWasteStatistics}>
+            <FaSync className="me-2" /> REFRESH DATA
+          </Button>
+        </Alert>
+      </div>
+    );
+  }
+
+  return (
+    <div className="analytics-container" style={{ 
+      background: sciFiColors.darkGradient,
+      minHeight: '100vh',
+      padding: '2rem'
+    }}>
+      {/* Header Section */}
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1 style={{ 
+            color: sciFiColors.highlight,
+            fontFamily: "'Orbitron', sans-serif",
+            textShadow: '0 0 10px rgba(0, 255, 255, 0.3)'
+          }}>
+            Waste Analytics Dashboard
+          </h1>
+          <p className="text-muted mb-0">
+            <FaInfoCircle className="me-2" />
+            Comprehensive analysis of waste management metrics
+          </p>
+        </div>
+        <div className="d-flex gap-3">
+          <div className="btn-group">
+            <Button 
+              variant="outline-info" 
+              className={`btn-glow ${view === 'charts' ? 'active' : ''}`}
+              onClick={() => setView('charts')}
+            >
+              <FaChartBar className="me-2" />
+              Charts
+            </Button>
+            <Button 
+              variant="outline-info" 
+              className={`btn-glow ${view === 'table' ? 'active' : ''}`}
+              onClick={() => setView('table')}
+            >
+              <FaTable className="me-2" />
+              Table
+            </Button>
+          </div>
+          <div className="btn-group">
+            <Button 
+              variant="outline-info" 
+              className="btn-glow"
+              onClick={() => exportData('CSV')}
+            >
+              <FaCloudDownloadAlt className="me-2" />
+              Export CSV
+            </Button>
+            <Button 
+              variant="outline-info" 
+              className="btn-glow"
+              onClick={() => exportData('PDF')}
+            >
+              <FaPrint className="me-2" />
+              Export PDF
+            </Button>
+          </div>
           <Button 
-            variant="primary"
-            onClick={() => exportData('PDF')}
+            variant="info"
+            className="btn-glow"
+            onClick={() => setIsFullscreen(!isFullscreen)}
           >
-            <FaChartBar className="me-2" />
-            Export PDF
+            <FaExpand className="me-2" />
+            {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
           </Button>
         </div>
       </div>
-      
-      <Card className="mb-4 shadow-sm">
-        <Card.Header>
-          <h5 className="mb-0">Date Range</h5>
-        </Card.Header>
+
+      {/* Date Range Selection */}
+      <Card className="mb-4 analytics-card">
         <Card.Body>
-          <Form>
-            <Row>
-              <Col md={5}>
-                <Form.Group>
-                  <Form.Label>Start Date</Form.Label>
-                  <Form.Control 
-                    type="date" 
-                    name="start_date"
-                    value={dateRange.start_date}
-                    onChange={handleDateChange}
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={5}>
-                <Form.Group>
-                  <Form.Label>End Date</Form.Label>
-                  <Form.Control 
-                    type="date" 
-                    name="end_date"
-                    value={dateRange.end_date}
-                    onChange={handleDateChange}
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={2} className="d-flex align-items-end">
+          <Row className="align-items-end">
+            <Col md={compareMode ? 3 : 4}>
+              <Form.Group>
+                <Form.Label>
+                  <FaCalendarAlt className="me-2" />
+                  Start Date
+                </Form.Label>
+                <Form.Control
+                  type="date"
+                  name="start_date"
+                  value={dateRange.start_date}
+                  onChange={handleDateChange}
+                  className="form-control-sci-fi"
+                />
+              </Form.Group>
+            </Col>
+            <Col md={compareMode ? 3 : 4}>
+              <Form.Group>
+                <Form.Label>
+                  <FaCalendarAlt className="me-2" />
+                  End Date
+                </Form.Label>
+                <Form.Control
+                  type="date"
+                  name="end_date"
+                  value={dateRange.end_date}
+                  onChange={handleDateChange}
+                  className="form-control-sci-fi"
+                />
+              </Form.Group>
+            </Col>
+            {compareMode && (
+              <>
+                <Col md={3}>
+                  <Form.Group>
+                    <Form.Label>Comparison Period</Form.Label>
+                    <Form.Select 
+                      className="form-control-sci-fi"
+                      onChange={(e) => handleComparisonPeriodChange(e.target.value)}
+                    >
+                      <option value="previous">Previous Period</option>
+                      <option value="year_ago">Same Period Last Year</option>
+                      <option value="custom">Custom Range</option>
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </>
+            )}
+            <Col md={compareMode ? 3 : 4}>
+              <div className="d-flex gap-2">
                 <Button 
                   variant="primary" 
-                  className="w-100"
+                  className="w-100 btn-glow"
                   onClick={applyDateFilter}
                 >
-                  Apply
+                  <FaFilter className="me-2" />
+                  Apply Filter
                 </Button>
-              </Col>
-            </Row>
-          </Form>
+                <Button 
+                  variant="outline-primary"
+                  className="btn-glow"
+                  onClick={() => setCompareMode(!compareMode)}
+                >
+                  <FaChartLine className="me-2" />
+                  {compareMode ? 'Disable Compare' : 'Compare'}
+                </Button>
+              </div>
+            </Col>
+          </Row>
         </Card.Body>
       </Card>
-      
-      {error ? (
-        <Alert variant="danger">
-          <Alert.Heading>Error Loading Statistics</Alert.Heading>
-          <p>{error}</p>
-          <Button 
-            variant="outline-danger" 
-            onClick={fetchWasteStatistics}
-          >
-            <FaSync className="me-2" />
-            Retry
-          </Button>
-        </Alert>
-      ) : loading ? (
-        <div className="text-center p-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
+
+      <Card className="mb-4 analytics-card">
+        <Card.Header className="d-flex justify-content-between align-items-center">
+          <h5 className="mb-0">Performance Metrics</h5>
+          <div className="btn-group">
+            <Button 
+              variant={activeMetric === 'total' ? 'info' : 'outline-info'}
+              onClick={() => setActiveMetric('total')}
+            >
+              Total Waste
+            </Button>
+            <Button 
+              variant={activeMetric === 'recyclable' ? 'info' : 'outline-info'}
+              onClick={() => setActiveMetric('recyclable')}
+            >
+              Recyclable
+            </Button>
+            <Button 
+              variant={activeMetric === 'efficiency' ? 'info' : 'outline-info'}
+              onClick={() => setActiveMetric('efficiency')}
+            >
+              Efficiency
+            </Button>
           </div>
-          <p className="mt-3">Loading waste statistics...</p>
-        </div>
-      ) : (
-        <>
+        </Card.Header>
+        <Card.Body>
           {/* Summary Cards */}
           <Row className="mb-4">
             <Col md={3} sm={6} className="mb-3">
@@ -480,7 +702,7 @@ const Analytics = () => {
               <Card className="shadow-sm h-100 text-center">
                 <Card.Body>
                   <h6 className="text-muted">Waste Categories</h6>
-                  <h2 className="mb-0">{wasteByCategory.length}</h2>
+                  <h2 className="mb-0">{wasteByCategory?.length || 0}</h2>
                   <p className="text-muted">different categories</p>
                 </Card.Body>
               </Card>
@@ -490,27 +712,42 @@ const Analytics = () => {
           {/* Charts */}
           <Row>
             <Col lg={4} md={6} className="mb-4">
-              <Card className="shadow-sm h-100">
+              <Card className="analytics-card h-100">
                 <Card.Header>
-                  <h5 className="mb-0">Waste by Type</h5>
+                  <h5 className="mb-0">Waste Distribution</h5>
                 </Card.Header>
                 <Card.Body>
                   {wasteTypeChartData && (
-                    <Pie 
-                      data={wasteTypeChartData} 
-                      options={{
-                        responsive: true,
-                        plugins: {
-                          legend: {
-                            position: 'bottom',
-                          },
-                          title: {
-                            display: true,
-                            text: 'Recyclable vs Non-Recyclable Waste'
+                    <div className="chart-container" style={{ height: '300px' }}>
+                      <Doughnut 
+                        data={wasteTypeChartData} 
+                        options={{
+                          ...enhancedChartOptions,
+                          cutout: '70%',
+                          plugins: {
+                            ...enhancedChartOptions.plugins,
+                            doughnutlabel: {
+                              labels: [
+                                {
+                                  text: 'Total',
+                                  font: {
+                                    size: '20',
+                                    family: "'Orbitron', sans-serif"
+                                  }
+                                },
+                                {
+                                  text: wasteStats?.total_waste || '0',
+                                  font: {
+                                    size: '24',
+                                    family: "'Orbitron', sans-serif"
+                                  }
+                                }
+                              ]
+                            }
                           }
-                        }
-                      }}
-                    />
+                        }}
+                      />
+                    </div>
                   )}
                 </Card.Body>
               </Card>
@@ -573,8 +810,37 @@ const Analytics = () => {
               </Card>
             </Col>
           </Row>
-        </>
-      )}
+        </Card.Body>
+      </Card>
+
+      <style jsx>{`
+        .analytics-card {
+          background: ${sciFiColors.background};
+          border: 1px solid ${sciFiColors.primary};
+          box-shadow: ${sciFiColors.glowEffect};
+        }
+        
+        .analytics-card .card-header {
+          background: rgba(0, 0, 0, 0.3);
+          border-bottom: 1px solid ${sciFiColors.primary};
+          color: ${sciFiColors.highlight};
+        }
+        
+        .btn-glow:hover {
+          box-shadow: 0 0 15px ${sciFiColors.primary};
+          transform: translateY(-2px);
+          transition: all 0.3s ease;
+        }
+        
+        .chart-container {
+          position: relative;
+          transition: all 0.3s ease;
+        }
+        
+        .chart-container:hover {
+          transform: scale(1.02);
+        }
+      `}</style>
     </div>
   );
 };
